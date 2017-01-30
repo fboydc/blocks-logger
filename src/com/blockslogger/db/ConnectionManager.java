@@ -4,10 +4,10 @@ import java.sql.*;
 public class ConnectionManager {
 
 	private static String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	private static String DB_URL = "jdbc:mysql://localhost/blockslogger";
+	private static String DB_URL = "jdbc:mysql://rds-mysql-blockslogger.ct0jwfekmkia.us-east-1.rds.amazonaws.com:3306/blockslogger";
 	
-	private static final String USER = "root";
-	private static final String PSSWD = "";
+	private static final String USER = "fboyd";
+	private static final String PSSWD = "KiwiGate5";
 	
 	private static Connection conn;
 	private static String urlstring;
