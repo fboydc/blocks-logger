@@ -3,8 +3,10 @@ package com.blockslogger.models;
 import java.util.ArrayList;
 
 public class Food {
+	private String id;
 	private String name;
 	private double amount;
+	private double cals;
 	private String unit;
 	private double fat;
 	private double carbs;
@@ -13,9 +15,11 @@ public class Food {
 	private double carbblocks;
 	private double proteinblocks;
 	
-	public Food(String name, double amount, String unit, double fat, double carbs, double protein){
+	public Food(String id, String name, double amount, double cals, String unit, double fat, double carbs, double protein){
+		this.id = id;
 		this.name = name;
 		this.amount = amount;
+		this.cals = cals;
 		this.unit = unit;
 		this.fat = fat;
 		this.carbs = carbs;
@@ -25,7 +29,7 @@ public class Food {
 	}
 	
 	
-	public void transformToBlocks(double fat, double carbs, double protein){
+	private void transformToBlocks(double fat, double carbs, double protein){
 		this.fatblocks = fat/1.5;
 		this.carbblocks = carbs/9;
 		this.protein = protein/7;
@@ -33,12 +37,20 @@ public class Food {
 	
 	//------------------GETTERS---------------------------------------------//
 	
+	public String getId(){
+		return id;
+	}
+	
 	public String getName(){
 		return name;
 	}
 	
 	public double getAmount(){
 		return amount;
+	}
+	
+	public double getCals(){
+		return cals;
 	}
 	
 	public String getUnit(){

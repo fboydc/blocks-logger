@@ -26,20 +26,31 @@ $(document).ready(function(){
 		$("#search-bar").keyup(function(){
 			
 			$.ajax({
-				url : '/BlocksLogger/FoodsServlet',
+				type:"POST",
+				url: '/BlocksLogger/FoodsServlet',
 				data : {
 					userStrings : $('#search-bar').val(),
 					requestKind : "2"
 				},
-				success : function(responseText){
-					if($("#search-bar").val() == ""){
+				dataType : "json",
+				success: function(data){
+					
+					$.each(data, function(key, value){
 						$("#modal-food-list").html("");
-					}else{
-						$("#modal-food-list").html(responseText);
-					}
+						$("#modal-food-list").append("<tr class=\"food-row\">");
+						$("#modal-food-list").append("<td style=\"display: none;\">"+value.id+"</td>");
+						$("#modal-food-list").append("<td>"+value.name+"</td>");
+						$("#modal-food-list").append("<td><input class=\"food-amount\" type=\"text\" value=\"" + value.amount+"\"/></td>");
+						$("#modal-food-list").append("<td>"+value.unit+"</td>");
+						$("#modal-food-list").append("<td>"+value.cals+"</td>");
+						$("#modal-food-list").append("<td><a class=\"add\" href=\"#\">add</a></td>");
+						$("#modal-food-list").append("</tr>");
+					});
 					
 				}
+			
 			});
+			
 			
 			
 		});
@@ -53,7 +64,7 @@ $(document).ready(function(){
 			foodListReference = $(this).parent().prevAll();
 			
 			if($.isNumeric(foodListReference.eq(2).find(">:first-child").val()))
-				addFood(foodListReference.eq(3).html(),foodListReference.eq(2).find(">:first-child").val(),foodListReference.eq(0).html(), foodListReference.eq(1).html(), $("#modal-meal-list"));
+				addFood(foodListReference.eq(4).html(),foodListReference.eq(3).html(),foodListReference.eq(2).find(">:first-child").val(),foodListReference.eq(0).html(), foodListReference.eq(1).html(), $("#modal-meal-list"));
 			else
 				$.notify("Please make sure you have typed a valid number for quantity!");
 			
@@ -62,13 +73,15 @@ $(document).ready(function(){
 		
 		/*
 		 * 
-		 * Purpose: this method will remove the selected food from the mealts table
+		 * Purpose: this method will remove the selected food from the meals table
 		 * 
 		 * 
 		 */
 		
 		$("#modal-meal-list").on("click", ".food-remove", function(){
+			foodListReference = $(this).parent().prevAll();
 			
+			//alert(foodListReference.eq(7).html());
 			$(this).parent().parent().remove();
 			if($(".food-row").size() ==  1){
 				$("#meal-total-row").remove();
@@ -115,6 +128,7 @@ $(document).ready(function(){
 		
 		
 		
+		
 		function changeCals(food, amnt, element){
 			
 			
@@ -140,16 +154,23 @@ $(document).ready(function(){
 		
 		
 		
-		function addFood(foodName, amount, cals, units, element){
+		function addFood(id, foodName, amount, cals, unit, element){
 			
-			//meal[foodName]= [foodName, amount, cals, units, element]; 
+			var food = new Object();
+			food.id = id;
+			food.name = foodName;
+			food.amount = amount;
+			food.cals = cals
+			food.unit = unit;
+			meal.push(food);
 			
+			alert(meal.length);
 			$.ajax({
 				url: '/BlocksLogger/FoodsServlet',
 				data : {
 					userFood : foodName,
 					amount : amount,
-					units : units,
+					units : unit,
 					cals : cals,
 					requestKind : "3"
 				},
@@ -158,6 +179,11 @@ $(document).ready(function(){
 					totalizeMeal(element);
 				}
 			});
+			
+			
+			
+			
+			
 		}
 		
 		

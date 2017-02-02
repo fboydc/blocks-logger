@@ -1,6 +1,7 @@
 package com.blockslogger.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -13,6 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.blockslogger.db.ConnectionManager;
+import com.blockslogger.models.Food;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+
 
 
 /**
@@ -62,26 +68,38 @@ public class FoodsServlet extends HttpServlet {
 	
 	protected void loadFood(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String userStrings = request.getParameter("userStrings").trim();
+		
+		PrintWriter out = response.getWriter();
+		response.setContentType("text/html");
+		response.setHeader("Cache-Control", "no-cache, no-store");
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Expires", "-1");
+		
+		response.setHeader("Access-Control-Allow-Origin","*");
+		response.setHeader("Access-Control-Allow-Methods","POST");
+		response.setHeader("Access-Control-Allow-Headers","Content-Type");
+		response.setHeader("Access-Control-Allow-Age","86400");
+		
+		Gson gson = new Gson();
+		JsonObject myObj = new JsonObject();
+		
 		ResultSet rs = ConnectionManager.executeQuery("SELECT * FROM food WHERE name LIKE '"+userStrings+"%'");
-		String foodsTable = "";
 		try{
-			while(rs.next()){
-				foodsTable +="<tr class=\"food-row\">";
-				foodsTable +="<td>" + rs.getString("name") + "</td>";
-				foodsTable +="<td><input class=\"food-amount\" type=\"text\" value=\"" + rs.getDouble("amount") + "\"/></td>";
-				foodsTable +="<td>"+ rs.getString("unit")+"</td>";
-				foodsTable +="<td>"+ rs.getString("cals")+"</td>";
-				foodsTable +="<td><a class=\"add\" href=\"#\">add</a></td>";
-				foodsTable +="</tr>";
-			}
+			while(rs.next())
+				myObj.add(rs.getString("f_id"), gson.toJsonTree(new Food(rs.getString("f_id"), rs.getString("name"), rs.getDouble("amount"), rs.getDouble("cals"),rs.getString("unit"), rs.getDouble("fat"), rs.getDouble("carbs"), rs.getDouble("protein"))));
+			
+			
+			out.println(myObj.toString());
+			
+			out.close();
+			
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
-		response.setContentType("text/plain");
-		System.out.println("here");
-		response.getWriter().write(foodsTable);
-		
+			
 	}
+	
+	
 	
 	
 
