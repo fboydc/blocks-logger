@@ -43,10 +43,10 @@ $(document).ready(function(){
 						$("#modal-food-list").append("<td><input class=\"food-amount\" type=\"text\" value=\"" + value.amount+"\"/></td>");
 						$("#modal-food-list").append("<td>"+value.unit+"</td>");
 						$("#modal-food-list").append("<td>"+value.cals+"</td>");
+						$("#modal-food-list").append("<td style=\"display: none;\">"+value.fat.toFixed(1)+"</td>");
+						$("#modal-food-list").append("<td style=\"display: none;\">"+value.carbs.toFixed(1)+"</td>");
+						$("#modal-food-list").append("<td style=\"display: none;\">"+value.protein.toFixed(1)+"</td>");
 						$("#modal-food-list").append("<td><a class=\"add\" href=\"#\">add</a></td>");
-						$("#modal-food-list").append("<td>"+value.fatblocks.toFixed(1)+"</td>");
-						$("#modal-food-list").append("<td>"+value.carbblocks.toFixed(1)+"</td>");
-						$("#modal-food-list").append("<td>"+value.proteinblocks.toFixed(1)+"</td>");
 						$("#modal-food-list").append("</tr>");
 					});
 					
@@ -66,8 +66,8 @@ $(document).ready(function(){
 		$("#modal-food-list").on("click", ".add", function(){
 			foodListReference = $(this).parent().prevAll();
 			
-			if($.isNumeric(foodListReference.eq(2).find(">:first-child").val()))
-				addFood(foodListReference.eq(4).html(),foodListReference.eq(3).html(),foodListReference.eq(2).find(">:first-child").val(),foodListReference.eq(0).html(), foodListReference.eq(1).html(), $("#modal-meal-list"));
+			if($.isNumeric(foodListReference.eq(5).find(">:first-child").val()))
+				addFood(foodListReference.eq(7).html(),foodListReference.eq(6).html(),foodListReference.eq(5).find(">:first-child").val(),foodListReference.eq(4).html(), foodListReference.eq(3).html(), foodListReference.eq(2).html(), foodListReference.eq(1).html(), foodListReference.eq(0).html());
 			else
 				$.notify("Please make sure you have typed a valid number for quantity!");
 			
@@ -82,13 +82,19 @@ $(document).ready(function(){
 		 */
 		
 		$("#modal-meal-list").on("click", ".food-remove", function(){
+			
+			
 			foodListReference = $(this).parent().prevAll();
 			
-
+			removeFood(foodListReference.eq(7).html())
+			
 			$(this).parent().parent().remove();
+			
+			
 			if($(".food-row").size() ==  1){
 				$("#meal-total-row").remove();
 			}else{
+				alert("here");
 				totalizeMeal($("#modal-meal-list"));
 			}
 			
@@ -97,7 +103,14 @@ $(document).ready(function(){
 		});
 		
 		
-
+		function removeFood(foodId){
+			for(i=0;i < meal.length; i++){
+				if(meal[i].id = foodId)
+					meal.splice(i,1);
+					alert(meal.length);
+			}
+		}
+		
 		
 		
 		/*
@@ -161,33 +174,35 @@ $(document).ready(function(){
 		
 		
 		
-		function addFood(id, foodName, amount, cals, unit, element){
+		function addFood(id, foodName, amount, units, cals, fat, carbs, protein){
+
 			
 			var food = new Object();
 			food.id = id;
 			food.name = foodName;
 			food.amount = amount;
 			food.cals = cals
-			food.unit = unit;
+			food.units = units;
+			food.fat = fat;
+			food.carbs = carbs;
+			food.protein = protein;
 			meal.push(food);
+			alert(meal.length);
 			
+			$("#modal-meal-list").append("<tr class='food-row'>" +
+										 "<td style='display:none;'>"+food.id+"</td>" +
+										 "<td>"+food.name+"</td>"+
+										 "<td class='food-amnt'>"+food.amount+"</td>"+
+										 "<td class='food-unit'>"+food.units+"</td>"+
+										 "<td class='food-cals'>"+food.cals+"</td>"+
+										 "<td class='food-fblocks'>"+(food.fat/1.5).toFixed(1)+"</td>"+
+										 "<td class='food-cblocks'>"+(food.carbs/9).toFixed(1)+"</td>"+
+										 "<td class='food-pblocks'>"+(food.protein/7).toFixed(1)+"</td>"+
+										 "<td><a href=\"#\" class='food-remove'>remove</a></td>"+
+										 "</tr>");		
+			totalizeMeal($("#modal-meal-list"));
 			
-			/*
-			$.ajax({
-				url: '/BlocksLogger/FoodsServlet',
-				data : {
-					userFood : foodName,
-					amount : amount,
-					units : unit,
-					cals : cals,
-					requestKind : "3"
-				},
-				success: function(responseText){
-					element.append(responseText);
-					totalizeMeal(element);
-				}
-			});
-			*/
+	
 			
 			
 			
@@ -228,10 +243,10 @@ $(document).ready(function(){
 					 		+"<td><b>Total</b></td>"+
 					 		"<td>"+total_amnt+"</td>"+
 					 		"<td></td>"+
-					 		"<td>"+total_cals.toFixed(2)+"</td>"+
-					 		"<td>"+total_f_blocks.toFixed(2)+"</td>"+
-					 		"<td>"+total_c_blocks.toFixed(2)+"</td>"+
-					 		"<td>"+total_p_blocks.toFixed(2)+"</td>"+
+					 		"<td>"+total_cals+"</td>"+
+					 		"<td>"+total_f_blocks.toFixed(1)+"</td>"+
+					 		"<td>"+total_c_blocks.toFixed(1)+"</td>"+
+					 		"<td>"+total_p_blocks.toFixed(1)+"</td>"+
 					 		"</tr>"+
 					 		
 					 		
