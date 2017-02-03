@@ -9,7 +9,7 @@ $(document).ready(function(){
 		 * 
 		 */
 		$("#create-meal-modal").on("hidden.bs.modal", function(){
-			//alert("modal hidden!");
+
 			$("#modal-food-list").html("");
 			$("#modal-meal-list").html("");
 			$("#search-bar").val('');
@@ -44,6 +44,9 @@ $(document).ready(function(){
 						$("#modal-food-list").append("<td>"+value.unit+"</td>");
 						$("#modal-food-list").append("<td>"+value.cals+"</td>");
 						$("#modal-food-list").append("<td><a class=\"add\" href=\"#\">add</a></td>");
+						$("#modal-food-list").append("<td>"+value.fatblocks.toFixed(1)+"</td>");
+						$("#modal-food-list").append("<td>"+value.carbblocks.toFixed(1)+"</td>");
+						$("#modal-food-list").append("<td>"+value.proteinblocks.toFixed(1)+"</td>");
 						$("#modal-food-list").append("</tr>");
 					});
 					
@@ -81,7 +84,7 @@ $(document).ready(function(){
 		$("#modal-meal-list").on("click", ".food-remove", function(){
 			foodListReference = $(this).parent().prevAll();
 			
-			//alert(foodListReference.eq(7).html());
+
 			$(this).parent().parent().remove();
 			if($(".food-row").size() ==  1){
 				$("#meal-total-row").remove();
@@ -104,9 +107,10 @@ $(document).ready(function(){
 		 */
 		
 		$("#modal-food-list").on("keyup", ".food-amount", function(){
-			if($.isNumeric($(this).val()))
+			if($.isNumeric($(this).val())){
 				changeCals($(this).parent().prev().html(),$(this).val(), $(this).parent().next().next());
-					
+				
+			}	
 			else
 				$(this).parent().next().next().html("NaN");
 			
@@ -126,6 +130,9 @@ $(document).ready(function(){
 		});
 		
 		
+		function changeBlocks(){
+			
+		}
 		
 		
 		
@@ -164,7 +171,8 @@ $(document).ready(function(){
 			food.unit = unit;
 			meal.push(food);
 			
-			alert(meal.length);
+			
+			/*
 			$.ajax({
 				url: '/BlocksLogger/FoodsServlet',
 				data : {
@@ -179,7 +187,7 @@ $(document).ready(function(){
 					totalizeMeal(element);
 				}
 			});
-			
+			*/
 			
 			
 			

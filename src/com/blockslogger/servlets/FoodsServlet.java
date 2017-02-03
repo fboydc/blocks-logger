@@ -130,8 +130,8 @@ public class FoodsServlet extends HttpServlet {
 	
 	protected void addFood(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
+		/*
 		String food = request.getParameter("userFood").trim();
-		
 		ResultSet rs = ConnectionManager.executeQuery("select fat/amount as \"fat_factor\", carbs/amount as\"carb_factor\", protein/amount as \"protein_factor\" from food where name='"+food+"'");
 		
 		try{
@@ -157,6 +157,27 @@ public class FoodsServlet extends HttpServlet {
 		}catch(SQLException e){
 			
 		}
+		*/
+		String food = request.getParameter("userFood").trim();
+		PrintWriter out = response.getWriter();
+		
+		response.setContentType("text/html");
+		response.setHeader("Cache-Control", "no-cache, no-store");
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Expires", "-1");
+		
+		response.setHeader("Access-Control-Allow-Origin","*");
+		response.setHeader("Access-Control-Allow-Methods","POST");
+		response.setHeader("Access-Control-Allow-Headers","Content-Type");
+		response.setHeader("Access-Control-Allow-Age","86400");
+		
+		
+		Gson gson = new Gson();
+		JsonObject myObj = new 	JsonObject();
+		
+		
+		
+		
 		
 			
 		
