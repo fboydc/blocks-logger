@@ -13,6 +13,7 @@ $(document).ready(function(){
 			$("#modal-food-list").html("");
 			$("#modal-meal-list").html("");
 			$("#search-bar").val('');
+			meal = new Array();
 			
 		});
 			
@@ -94,7 +95,6 @@ $(document).ready(function(){
 			if($(".food-row").size() ==  1){
 				$("#meal-total-row").remove();
 			}else{
-				alert("here");
 				totalizeMeal($("#modal-meal-list"));
 			}
 			
@@ -107,7 +107,7 @@ $(document).ready(function(){
 			for(i=0;i < meal.length; i++){
 				if(meal[i].id = foodId)
 					meal.splice(i,1);
-					alert(meal.length);
+					break;
 			}
 		}
 		
@@ -135,6 +135,17 @@ $(document).ready(function(){
 		
 		$("#save-meal").on("click", function(){
 			if($("#modal-meal-list").children().size()>1){
+				
+				$.ajax({
+					url:'/BlocksLogger/FoodsServlet',
+					requestKind: '3',
+					type: 'POST',
+					dataType: 'json',
+					data: {meal:food},
+					success: function(data){
+						
+					}
+				});
 				
 			}else
 				$.notify("you have not added any food for this meal!","Error");
@@ -187,7 +198,6 @@ $(document).ready(function(){
 			food.carbs = carbs;
 			food.protein = protein;
 			meal.push(food);
-			alert(meal.length);
 			
 			$("#modal-meal-list").append("<tr class='food-row'>" +
 										 "<td style='display:none;'>"+food.id+"</td>" +

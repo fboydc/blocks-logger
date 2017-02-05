@@ -53,7 +53,7 @@ public class FoodsServlet extends HttpServlet {
 		}else if(request.getParameter("requestKind").trim().equals("1")){
 			updateCalories(request, response);
 		}else if(request.getParameter("requestKind").trim().equals("3")){
-			addFood(request, response);
+			loadMeal(request, response);
 		}else if(request.getParameter("requestKind").trim().equals("4")){
 			viewFood(request, response);
 		}else if(request.getParameter("requestKind").trim().equals("5")){
@@ -85,12 +85,13 @@ public class FoodsServlet extends HttpServlet {
 		
 		ResultSet rs = ConnectionManager.executeQuery("SELECT * FROM food WHERE name LIKE '"+userStrings+"%'");
 		try{
-			while(rs.next())
-				myObj.add(rs.getString("f_id"), gson.toJsonTree(new Food(rs.getString("f_id"), rs.getString("name"), rs.getDouble("amount"), rs.getDouble("cals"),rs.getString("unit"), rs.getDouble("fat"), rs.getDouble("carbs"), rs.getDouble("protein"))));
-			
-			
+			while(rs.next()){
+				Food food = new Food(rs.getString("f_id"), rs.getString("name"), rs.getDouble("amount"), rs.getDouble("cals"),rs.getString("unit"), rs.getDouble("fat"), rs.getDouble("carbs"), rs.getDouble("protein"));
+				myObj.add(food.getId(), gson.toJsonTree(food));
+			}
+			rs.close();
+			ConnectionManager.closeConnection();
 			out.println(myObj.toString());
-			
 			out.close();
 			
 		}catch(SQLException e){
@@ -119,7 +120,11 @@ public class FoodsServlet extends HttpServlet {
 				double cals = rs.getDouble("calsxgram")* new Double(amnt);
 				
 				response.getWriter().write(new DecimalFormat("#.##").format(cals).toString());
+				
 			}
+			
+			rs.close();
+			ConnectionManager.closeConnection();
 			
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -128,38 +133,13 @@ public class FoodsServlet extends HttpServlet {
 		
 	}
 	
-	protected void addFood(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	protected void loadMeal(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		/*
+
 		String food = request.getParameter("userFood").trim();
-		ResultSet rs = ConnectionManager.executeQuery("select fat/amount as \"fat_factor\", carbs/amount as\"carb_factor\", protein/amount as \"protein_factor\" from food where name='"+food+"'");
 		
-		try{
-			String mealsTable = "";
-			if(rs.next()){
-				
-				mealsTable += "<tr class=\"food-row\">";
-				mealsTable += "<td>"+request.getParameter("userFood")+"</td>";
-				mealsTable += "<td class=\"food-amnt\">"+request.getParameter("amount")+"</td>";
-				mealsTable += "<td class=\"food-unit\">"+request.getParameter("units")+"</td>";
-				mealsTable += "<td class=\"food-cals\">"+request.getParameter("cals")+"</td>";
-				mealsTable += "<td class=\"food-fblocks\">"+new DecimalFormat("#.#").format((rs.getDouble("fat_factor")*new Double(request.getParameter("amount")))/3).toString()+"</td>";
-				mealsTable += "<td class=\"food-cblocks\">"+new DecimalFormat("#.#").format((rs.getDouble("carb_factor")*new Double(request.getParameter("amount")))/9).toString()+"</td>";
-				mealsTable += "<td class=\"food-pblocks\">"+new DecimalFormat("#.#").format((rs.getDouble("protein_factor")*new Double(request.getParameter("amount")))/7).toString()+"</td>";	
-				mealsTable += "<td><a href=\"#\" class=\"food-remove\">remove</a></td>";
-				mealsTable += "</tr>";
-				
-			}
-			
-			
-			response.setContentType("text/plain");
-			response.getWriter().write(mealsTable);
-		}catch(SQLException e){
-			
-		}
-		*/
-		String food = request.getParameter("userFood").trim();
-		PrintWriter out = response.getWriter();
+					//Food[] meal = request.getParameterValues("meal[]");
+		/*PrintWriter out = response.getWriter();
 		
 		response.setContentType("text/html");
 		response.setHeader("Cache-Control", "no-cache, no-store");
@@ -175,7 +155,7 @@ public class FoodsServlet extends HttpServlet {
 		Gson gson = new Gson();
 		JsonObject myObj = new 	JsonObject();
 		
-		
+		*/
 		
 		
 		
