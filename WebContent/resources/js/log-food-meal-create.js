@@ -138,10 +138,14 @@ $(document).ready(function(){
 				
 				$.ajax({
 					url:'/BlocksLogger/FoodsServlet',
-					requestKind: '3',
+					cache: false,
 					type: 'POST',
 					dataType: 'json',
-					data: {meal:food},
+					contentType: "application/x-www-form-urlencoded; charset=UTF-8;",
+					data: {
+						requestKind: "3",
+						meal: JSON.stringify(meal)
+					},
 					success: function(data){
 						
 					}
@@ -187,27 +191,27 @@ $(document).ready(function(){
 		
 		function addFood(id, foodName, amount, units, cals, fat, carbs, protein){
 
-			
-			var food = new Object();
-			food.id = id;
-			food.name = foodName;
-			food.amount = amount;
-			food.cals = cals
-			food.units = units;
-			food.fat = fat;
-			food.carbs = carbs;
-			food.protein = protein;
-			meal.push(food);
+			alert("pushing into array: id:" +id +", name:"+foodName+", amount:"+amount+", cals:"+cals);
+			meal.push({
+				"id":id,
+				"name":foodName,
+				"amount":amount,
+				"cals":cals,
+				"unit":units,
+				"fat":fat,
+				"carbs":carbs,
+				"protein":protein		
+			});
 			
 			$("#modal-meal-list").append("<tr class='food-row'>" +
-										 "<td style='display:none;'>"+food.id+"</td>" +
-										 "<td>"+food.name+"</td>"+
-										 "<td class='food-amnt'>"+food.amount+"</td>"+
-										 "<td class='food-unit'>"+food.units+"</td>"+
-										 "<td class='food-cals'>"+food.cals+"</td>"+
-										 "<td class='food-fblocks'>"+(food.fat/1.5).toFixed(1)+"</td>"+
-										 "<td class='food-cblocks'>"+(food.carbs/9).toFixed(1)+"</td>"+
-										 "<td class='food-pblocks'>"+(food.protein/7).toFixed(1)+"</td>"+
+										 "<td style='display:none;'>"+id+"</td>" +
+										 "<td>"+foodName+"</td>"+
+										 "<td class='food-amnt'>"+amount+"</td>"+
+										 "<td class='food-unit'>"+units+"</td>"+
+										 "<td class='food-cals'>"+cals+"</td>"+
+										 "<td class='food-fblocks'>"+(fat/1.5).toFixed(1)+"</td>"+
+										 "<td class='food-cblocks'>"+(carbs/9).toFixed(1)+"</td>"+
+										 "<td class='food-pblocks'>"+(protein/7).toFixed(1)+"</td>"+
 										 "<td><a href=\"#\" class='food-remove'>remove</a></td>"+
 										 "</tr>");		
 			totalizeMeal($("#modal-meal-list"));

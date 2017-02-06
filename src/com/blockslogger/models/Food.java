@@ -83,5 +83,11 @@ public class Food {
 	
 	//-------------SETTERS----------------------------------//
 	
+	
+	public String toString(){
+		return ("Id: "+ id + "\n"+ "Food name: "+name +"\n"+"Amount: "+amount+"\n"+"Calories: "+cals+"\n"+"Units of measure: "+unit+"\n"+"Fat Calories: "+fat+"\n"+"Carbohydrate Calories: "+carbs+"\n"+"Protein Calories: "+protein+"\n"+"Blocks of fat: "+fatblocks+"\n"+"Blocks of carbohydrates: "+carbblocks+"\n"+"Blocks of protein: "+proteinblocks+"\n");
+		
+		
+	}
 
 }

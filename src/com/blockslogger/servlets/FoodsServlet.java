@@ -5,6 +5,9 @@ import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -136,7 +139,13 @@ public class FoodsServlet extends HttpServlet {
 	protected void loadMeal(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
 
-		String food = request.getParameter("userFood").trim();
+		Gson gson = new Gson();
+		List<Food> meal = Arrays.asList(gson.fromJson(request.getParameter("meal"), Food[].class));
+		
+		for(Food food : meal){
+			System.out.println(food.toString());
+		}
+		
 		
 					//Food[] meal = request.getParameterValues("meal[]");
 		/*PrintWriter out = response.getWriter();

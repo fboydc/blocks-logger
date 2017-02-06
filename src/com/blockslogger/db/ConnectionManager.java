@@ -3,7 +3,7 @@ import java.sql.*;
 
 public class ConnectionManager {
 
-	private static String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+	private static String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 	private static String DB_URL = "jdbc:mysql://rds-mysql-blockslogger.ct0jwfekmkia.us-east-1.rds.amazonaws.com:3306/blockslogger";
 	
 	private static final String USER = "fboyd";
