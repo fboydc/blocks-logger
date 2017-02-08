@@ -141,30 +141,32 @@ public class FoodsServlet extends HttpServlet {
 
 		Gson gson = new Gson();
 		List<Food> meal = Arrays.asList(gson.fromJson(request.getParameter("meal"), Food[].class));
-		
-		for(Food food : meal){
-			System.out.println(food.toString());
+		int mealNum = 0;
+		//MUST CHECK FOR ANY PREVIOUS MEALS
+		try{
+			
+			
+			ResultSet  numCheck = ConnectionManager.executeQuery("SELECT COUNT(*) AS \"today's meals\" FROM meal WHERE DATE_FORMAT(DATE, '%b %d %Y %h:%i %p') < DATE_FORMAT(NOW(),'%b %d %Y %h:%i %p');");
+			
+			if(numCheck.next()){
+				mealNum = numCheck.getInt("today's meal") + 1;
+			}
+			
+			UUID currentMealId = UUID.randomUUID();
+			
+			ConnectionManager.executeQuery("INSERT INTO meal ('m_id','name','date','num') VALUES('"+currentMealId+"','MEAL "+mealNum+"',DATE_FORMAT(NOW(), '%b %d %Y %h:%i %p'),'"+mealNum+"')");
+			
+			
+			for(Food food : meal)
+				ConnectionManager.executeQuery("INSERT INTO food_meal (f_id, m_id, unit, amount, cals, f_cals, c_cals, p_cals) VALUES ('"+food.getId()+"','"+currentMealId+"','"+food.getUnit()+"','"+food.getAmount()+"','"+food.getCals()+"','"+food.getAmount()+"','"+food.getFat()+"','"+food.getCarbs()+"','"+food.getProtein()+"');");
+
+		}catch(SQLException e){
+			e.printStackTrace();
 		}
 		
 		
-					//Food[] meal = request.getParameterValues("meal[]");
-		/*PrintWriter out = response.getWriter();
 		
-		response.setContentType("text/html");
-		response.setHeader("Cache-Control", "no-cache, no-store");
-		response.setHeader("Pragma", "no-cache");
-		response.setHeader("Expires", "-1");
-		
-		response.setHeader("Access-Control-Allow-Origin","*");
-		response.setHeader("Access-Control-Allow-Methods","POST");
-		response.setHeader("Access-Control-Allow-Headers","Content-Type");
-		response.setHeader("Access-Control-Allow-Age","86400");
-		
-		
-		Gson gson = new Gson();
-		JsonObject myObj = new 	JsonObject();
-		
-		*/
+					
 		
 		
 		
