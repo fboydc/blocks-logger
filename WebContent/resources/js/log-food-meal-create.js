@@ -147,7 +147,8 @@ $(document).ready(function(){
 						meal: JSON.stringify(meal)
 					},
 					success: function(data){
-						
+						$("#create-meal-modal").close();
+						$.notify("meal added","success");
 					}
 				});
 				
@@ -158,9 +159,6 @@ $(document).ready(function(){
 		});
 		
 		
-		function changeBlocks(){
-			
-		}
 		
 		
 		
@@ -270,6 +268,16 @@ $(document).ready(function(){
 		
 		
 
+		/*
+		 * purpose: This function will load all the meals for the current day
+		 * 
+		 */
+		
+		function loadMeals(){
+			$.ajax({
+				
+			})
+		}
 	
 	
 

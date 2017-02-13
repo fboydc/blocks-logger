@@ -20,6 +20,7 @@ import com.blockslogger.db.ConnectionManager;
 import com.blockslogger.models.Food;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mysql.jdbc.Connection;
 
 
 
@@ -56,7 +57,7 @@ public class FoodsServlet extends HttpServlet {
 		}else if(request.getParameter("requestKind").trim().equals("1")){
 			updateCalories(request, response);
 		}else if(request.getParameter("requestKind").trim().equals("3")){
-			loadMeal(request, response);
+			logMeal(request, response);
 		}else if(request.getParameter("requestKind").trim().equals("4")){
 			viewFood(request, response);
 		}else if(request.getParameter("requestKind").trim().equals("5")){
@@ -113,7 +114,7 @@ public class FoodsServlet extends HttpServlet {
 		String amnt = request.getParameter("amnt").trim();
 		
 		
-		ResultSet rs = ConnectionManager.executeQuery("select cals/amount as \"calsxgram\" from food where name='"+food+"'");
+		ResultSet rs = ConnectionManager.executeQuery("select cals/amount as \"calsxgram\" from food where name='"+food+"';");
 		
 		
 		try{
@@ -136,7 +137,7 @@ public class FoodsServlet extends HttpServlet {
 		
 	}
 	
-	protected void loadMeal(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	protected void logMeal(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
 
 		Gson gson = new Gson();
@@ -146,20 +147,21 @@ public class FoodsServlet extends HttpServlet {
 		try{
 			
 			
-			ResultSet  numCheck = ConnectionManager.executeQuery("SELECT COUNT(*) AS \"today's meals\" FROM meal WHERE DATE_FORMAT(DATE, '%b %d %Y %h:%i %p') < DATE_FORMAT(NOW(),'%b %d %Y %h:%i %p');");
+			ResultSet  numCheck = ConnectionManager.executeQuery("SELECT COUNT(*) AS \"today's meals\" FROM meal WHERE date < NOW();");
 			
 			if(numCheck.next()){
-				mealNum = numCheck.getInt("today's meal") + 1;
+				mealNum = numCheck.getInt("today's meals") + 1;
 			}
 			
 			UUID currentMealId = UUID.randomUUID();
 			
-			ConnectionManager.executeQuery("INSERT INTO meal ('m_id','name','date','num') VALUES('"+currentMealId+"','MEAL "+mealNum+"',DATE_FORMAT(NOW(), '%b %d %Y %h:%i %p'),'"+mealNum+"')");
+			ConnectionManager.executeQuery("INSERT INTO meal (m_id,name,date,num) VALUES('"+currentMealId+"','MEAL "+mealNum+"', NOW(),'"+mealNum+"')");
 			
 			
 			for(Food food : meal)
-				ConnectionManager.executeQuery("INSERT INTO food_meal (f_id, m_id, unit, amount, cals, f_cals, c_cals, p_cals) VALUES ('"+food.getId()+"','"+currentMealId+"','"+food.getUnit()+"','"+food.getAmount()+"','"+food.getCals()+"','"+food.getAmount()+"','"+food.getFat()+"','"+food.getCarbs()+"','"+food.getProtein()+"');");
-
+				ConnectionManager.executeQuery("INSERT INTO food_meal (f_id, m_id, unit, amount, cals, f_cals, c_cals, p_cals) VALUES ('"+food.getId()+"','"+currentMealId+"','"+food.getUnit()+"','"+food.getAmount()+"','"+food.getCals()+"','"+food.getFat()+"','"+food.getCarbs()+"','"+food.getProtein()+"');");
+			
+			ConnectionManager.closeConnection();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -242,6 +244,22 @@ public class FoodsServlet extends HttpServlet {
 	
 	
 	//-----------------MEAL METHODS--------------------------------------------------//
+	
+	/**
+	 * PURPOSE: This method will load today's meals
+	 * parameters: none
+	 */
+	
+	
+	public void loadMeals(){
+		
+		//ConnectionManager.
+	}
+	
+	
+	
+	
+	
 	
 	/*******************************************************************
 	 * PURPOSE: This function will handle meal insertion requests
